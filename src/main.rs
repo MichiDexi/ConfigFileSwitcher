@@ -6,7 +6,7 @@ use std::path::PathBuf;
 
 /*
 	Commands:
-	h : cfs -h [optional;str]command
+	h : cfs -h
 	s : cfs -s [str]confpath [str]source [str]name
 	l : cfs -l [str]name
 	r : cfs -r [str]name
