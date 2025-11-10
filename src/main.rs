@@ -175,22 +175,35 @@ Example: cfs -ls
 		let first_line_conf2 = contents_file2.lines().next().unwrap_or_default();
 
 		if first_line_conf1 != first_line_conf2 {
-			eprintln!("Config first lines mismatch!");
+			println!("Selected configs aren't for the same file: {} != {}", first_line_conf1, first_line_conf2);
 			process::exit(1);
 		}
 
-		let conf_dir = PathBuf::from(home).join(".config").join(first_line_conf1);
+		let mut conf_path = conf_dir.clone();
+		conf_path.push(first_line_conf1);
+		
+		let orig_contents = fs::read_to_string(&conf_path)?;
 
-		let target = if contents_file1 == fs::read_to_string(&conf_dir)? {
-			conf2
-		} else {
-			conf1
-		};
-		let contents = fs::read_to_string(&target)?;
-
-		let mut file = fs::File::create(&conf_dir)?;
-		writeln!(file, "{}", first_line_conf1)?;
-		write!(file, "{}", contents)?;
+		let conf1_convert_usable = contents_file1
+				.lines()
+				.skip(1)
+				.collect::<Vec<_>>()
+				.join("\n");
+				
+		let conf2_convert_usable = contents_file2
+				.lines()
+				.skip(1)
+				.collect::<Vec<_>>()
+				.join("\n");
+		
+		if orig_contents == conf1_convert_usable {
+	    let mut config = fs::File::create(conf_path)?; // create file
+  		write!(config, "{}", conf2_convert_usable)?; // copy config file without metadata
+		}
+		else {
+	    let mut config = fs::File::create(conf_path)?; // create file
+  		write!(config, "{}", conf1_convert_usable)?; // copy config file without metadata
+		}
 	}
 	
 	// -ls: list
