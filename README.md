@@ -1,5 +1,6 @@
 # ConfigFileSwitcher
-My first project that I would actually use
+My first project!
+I'm proud of it
 
 
 # Usage
